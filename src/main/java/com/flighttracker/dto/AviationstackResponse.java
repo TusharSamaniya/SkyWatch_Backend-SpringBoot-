@@ -39,6 +39,7 @@ public class AviationstackResponse {
 		private String iata;
 	}
 	
+	@Data
 	public static class AircraftNode{
 		private String icao24;
 	}

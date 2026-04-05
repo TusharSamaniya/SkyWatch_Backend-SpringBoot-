@@ -18,7 +18,6 @@ public class FrontendFlightResponse {
 	
 	//route data from Aviationstack
 	private String airlineName;
-	private String airineName;
 	private String flightNumber;
 	private String originAirport;
 	private String originIata;
