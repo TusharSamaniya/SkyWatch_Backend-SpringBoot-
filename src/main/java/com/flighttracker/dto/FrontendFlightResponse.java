@@ -1,5 +1,10 @@
 package com.flighttracker.dto;
 
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
 public class FrontendFlightResponse {
 	
 	//live data from Opensky
