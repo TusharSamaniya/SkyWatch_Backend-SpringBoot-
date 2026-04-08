@@ -36,7 +36,7 @@ public AviationstackResponse.FlightData getRouteDetails(String flightIata) {
             AviationstackResponse response = webClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .queryParam("access_key", accessKey)
-                            .queryParam("flight_iata", flightIata.trim())
+                            .queryParam("flight_icao", flightIata.trim())
                             .build())
                     .retrieve()
                     .bodyToMono(AviationstackResponse.class)
