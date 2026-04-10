@@ -1,28 +1,28 @@
 package com.flighttracker.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 import lombok.Data;
 
 @Data
 public class AirlabsFlight {
 	
-	@JsonProperty("flight_icao") 
-    private String callsign;     
+	@JsonAlias("flight_icao") // AirLabs name (Incoming)
+    private String callsign;  // Output to React as "callsign"
 
-    @JsonProperty("lat")         
+    @JsonAlias("lat")         
     private Double latitude;     
 
-    @JsonProperty("lng")
+    @JsonAlias("lng")
     private Double longitude;
 
-    @JsonProperty("alt")
+    @JsonAlias("alt")
     private Double altitude;
 
-    @JsonProperty("speed")
+    @JsonAlias("speed")
     private Double velocity;
     
-    @JsonProperty("dir")
+    @JsonAlias("dir")
     private Double trueTrack;
 
 }
