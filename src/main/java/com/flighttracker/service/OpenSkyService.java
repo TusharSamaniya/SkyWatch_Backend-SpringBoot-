@@ -29,7 +29,7 @@ public class OpenSkyService {
     }
 
     @PostConstruct
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 45000)
     public void fetchLiveFlightFromAPI() {
         try {
             log.info("Fetching live flight data from OpenSky...");
