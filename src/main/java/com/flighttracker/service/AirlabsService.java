@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.flighttracker.dto.AirlabsResponse;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -24,23 +25,34 @@ public class AirlabsService {
         this.webClient = builder.baseUrl(url).build();
     }
 
-    @Scheduled(fixedRate = 60000) // AirLabs free tier is strict, use 60s
+    @PostConstruct
+    @Scheduled(fixedRate = 60000) // AirLabs limit is generous, but 60s is safe
     public void fetchAirlabsData() {
         try {
+            log.info("Fetching live flight data over Northern India from AirLabs...");
+            
             AirlabsResponse data = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                     .queryParam("api_key", apiKey)
-                    // Bounding box for North India
-                    .queryParam("bbox", "20.0,70.0,35.0,85.0") 
+                    .queryParam("bbox", "20.0,70.0,35.0,85.0") // Bounding box for India
                     .build())
                 .retrieve()
                 .bodyToMono(AirlabsResponse.class)
                 .block();
 
             this.currentData = data;
-            log.info("Airlabs updated with {} flights", data.getResponse().size());
+            
+            if(data != null && data.getResponse() != null) {
+                log.info("Airlabs updated with {} flights", data.getResponse().size());
+            }
+
         } catch (Exception e) {
             log.error("Airlabs Error: {}", e.getMessage());
         }
+    }
+
+    // Your controller will call this method!
+    public AirlabsResponse getLiveFlights() {
+        return this.currentData;
     }
 }
