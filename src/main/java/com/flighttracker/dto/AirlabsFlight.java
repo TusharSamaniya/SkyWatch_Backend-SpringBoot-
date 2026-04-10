@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class AirlabsFlight {
 	
-	@JsonAlias("flight_icao") // AirLabs name (Incoming)
-    private String callsign;  // Output to React as "callsign"
+	@JsonAlias("flight_icao") 
+    private String callsign;     
 
     @JsonAlias("lat")         
     private Double latitude;     
