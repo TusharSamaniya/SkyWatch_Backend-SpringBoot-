@@ -94,4 +94,29 @@ public class AirlabsService {
         }
         return null;
     }
+    
+ // NEW: Fetches the real aircraft photo using the registration number
+    public String getAircraftPhoto(String registration) {
+        if (registration == null || registration.isEmpty()) return null;
+        
+        try {
+            log.info("Fetching photo for aircraft {}...", registration);
+            String url = "https://api.planespotters.net/pub/photos/reg/" + registration;
+            
+            // We use a new temporary WebClient here because this API doesn't need basic auth/keys
+            com.flighttracker.dto.PlanespottersResponse photoData = WebClient.create().get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(com.flighttracker.dto.PlanespottersResponse.class)
+                .block();
+
+            if (photoData != null && photoData.getPhotos() != null && !photoData.getPhotos().isEmpty()) {
+                // Return the direct URL to the image
+                return photoData.getPhotos().get(0).getThumbnail_large().getSrc();
+            }
+        } catch (Exception e) {
+            log.error("No photo found for {}. Error: {}", registration, e.getMessage());
+        }
+        return null;
+    }
 }

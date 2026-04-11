@@ -16,9 +16,9 @@ public class CorsConfig {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) { // Removed @Bean from here
 				registry.addMapping("/api/**")
-				        .allowedOrigins("http://localhost:5173")
-				        .allowedMethods("GET", "POST", "PUT", "DELETE")
-				        .allowedHeaders("*");
+		        .allowedOrigins("http://localhost:5173", "https://skyfind.tech", "https://www.skyfind.tech")
+		        .allowedMethods("GET", "POST", "PUT", "DELETE")
+		        .allowedHeaders("*");
 			}
 		};
 		
