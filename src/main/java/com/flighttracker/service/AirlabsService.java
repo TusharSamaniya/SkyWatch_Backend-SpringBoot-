@@ -8,6 +8,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.flighttracker.dto.AirlabsFlight;
 import com.flighttracker.dto.AirlabsResponse;
+import com.flighttracker.dto.AirlabsSchedule;
+import com.flighttracker.dto.AirlabsScheduleResponse;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +32,7 @@ public class AirlabsService {
     @Scheduled(fixedRate = 60000) // AirLabs limit is generous, but 60s is safe
     public void fetchAirlabsData() {
         try {
-            log.info("Fetching live flight data over Northern India from AirLabs...");
+            log.info("Fetching live flight data over India from AirLabs...");
             
             AirlabsResponse data = webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -67,5 +69,29 @@ public class AirlabsService {
                 .filter(flight -> flight.getCallsign() != null && flight.getCallsign().equalsIgnoreCase(callsign))
                 .findFirst()
                 .orElse(null); // Return null if the plane isn't in the current list
+    }
+    
+ // NEW: Fetches the schedule for a specific flight
+    public AirlabsSchedule getFlightSchedule(String flightIcao) {
+        try {
+            log.info("Fetching live schedule for {}...", flightIcao);
+            
+            // Notice we use absolute URL to point to /schedules instead of /flights
+            String url = "https://airlabs.co/api/v9/schedules?api_key=" + apiKey + "&flight_icao=" + flightIcao;
+            
+            AirlabsScheduleResponse scheduleData = webClient.get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(AirlabsScheduleResponse.class)
+                .block();
+
+            // AirLabs returns an array. We just want the first matching flight leg.
+            if (scheduleData != null && scheduleData.getResponse() != null && !scheduleData.getResponse().isEmpty()) {
+                return scheduleData.getResponse().get(0); 
+            }
+        } catch (Exception e) {
+            log.error("Failed to fetch schedule for {}. Error: {}", flightIcao, e.getMessage());
+        }
+        return null;
     }
 }
