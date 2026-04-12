@@ -2,7 +2,6 @@ package com.flighttracker.service;
 
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -11,7 +10,6 @@ import com.flighttracker.dto.AirlabsResponse;
 import com.flighttracker.dto.AirlabsSchedule;
 import com.flighttracker.dto.AirlabsScheduleResponse;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @Service

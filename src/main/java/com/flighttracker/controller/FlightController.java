@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flighttracker.dto.AirlabsFlight;
@@ -24,45 +25,18 @@ public class FlightController {
 	@Autowired
     private AirlabsService airlabsService; 
 
-    @GetMapping("/live")
-    public List<AirlabsFlight> getLiveFlights() {
-        AirlabsResponse response = airlabsService.getLiveFlights();
+	@GetMapping("/live")
+    public List<AirlabsFlight> getLiveFlights(
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String state) {
+        
+        AirlabsResponse response = airlabsService.getLiveFlights(country, state);
+        
         if (response != null && response.getResponse() != null) {
             return response.getResponse(); 
         }
         return Collections.emptyList();
     }
-    
-	/* @GetMapping("/{callsign}")
-	public AirlabsFlight getSpecificFlight(@PathVariable String callsign) {
-	    AirlabsFlight flight = airlabsService.getFlightByCallsign(callsign);
-	    if (flight == null) {
-	        // You could also throw a 404 error here, but returning null is fine for now
-	        return null; 
-	    }
-	    return flight;
-	}
-	
-	@GetMapping("/route/{flightIata}")
-	public AviationstackResponse.FlightData getFlightRoute(@PathVariable String flightIata) {
-	    return aviationstackService.getRouteDetails(flightIata);
-	}*/
-	
-	/*@GetMapping("/{callsign}")
-	public Map<String, Object> getSpecificFlight(@PathVariable String callsign) {
-	    Map<String, Object> combinedData = new HashMap<>();
-	
-	    // 1. Get the live radar telemetry from memory
-	    AirlabsFlight radarData = airlabsService.getFlightByCallsign(callsign);
-	    combinedData.put("radar", radarData);
-	
-	    // 2. Fetch the live timetable from AirLabs
-	    com.flighttracker.dto.AirlabsSchedule scheduleData = airlabsService.getFlightSchedule(callsign);
-	    combinedData.put("schedule", scheduleData);
-	
-	    return combinedData; // Spring Boot automatically converts this Map into a beautiful JSON object!
-	}
-	*/
 	@GetMapping("/{callsign}")
     public Map<String, Object> getSpecificFlight(@PathVariable String callsign) {
         Map<String, Object> combinedData = new HashMap<>();
