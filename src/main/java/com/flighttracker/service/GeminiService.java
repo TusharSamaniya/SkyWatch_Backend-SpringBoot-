@@ -16,7 +16,7 @@ public class GeminiService {
 	
 	@Value("${gemini.api.key}")
 	private String geminiApiKey;
-	
+		
 	private final WebClient webClient;
     private final ObjectMapper objectMapper;
     
