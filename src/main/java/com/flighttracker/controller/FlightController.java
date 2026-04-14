@@ -18,6 +18,8 @@ import com.flighttracker.dto.AirlabsResponse;
 import com.flighttracker.service.AirlabsService;
 import com.flighttracker.service.GeminiService;
 
+import tools.jackson.databind.JsonNode;
+
 @RestController
 @RequestMapping("/api/flights")
 @CrossOrigin(origins = "*")
@@ -75,5 +77,12 @@ public class FlightController {
         Map<String, String> response = new HashMap<>();
         response.put("story", story);
         return response;
+    }
+	
+	
+	// NEW: Endpoint to get Arrivals and Departures when an airport is clicked
+    @GetMapping("/airports/{iata}/schedules")
+    public Map<String, List<JsonNode>> getAirportSchedules(@PathVariable String iata) {
+        return airlabsService.getAirportSchedules(iata);
     }
 }
