@@ -291,4 +291,44 @@ public class AirlabsService {
             return null;
         }
     }
+    
+ // ==========================================
+    // NEW: Airline Fleet Tracker - Fetch Airlines DB
+    // ==========================================
+    public List<Map<String, String>> getActiveAirlines() {
+        log.info("Fetching global Airlines DB...");
+        
+        try {
+            String url = "https://airlabs.co/api/v9/airlines?api_key=" + apiKey;
+
+            JsonNode rootNode = WebClient.create().get()
+                    .uri(url)
+                    .retrieve()
+                    .bodyToMono(JsonNode.class)
+                    .block();
+
+            JsonNode responseArray = rootNode.path("response");
+            List<Map<String, String>> airlines = new ArrayList<>();
+
+            if (responseArray.isArray()) {
+                for (JsonNode node : responseArray) {
+                    // Only grab active airlines that have a valid 2-letter IATA code
+                    if (node.hasNonNull("iata_code") && !node.path("iata_code").asText().trim().isEmpty() 
+                            && node.hasNonNull("name")) {
+                        
+                        Map<String, String> airline = new HashMap<>();
+                        airline.put("iata", node.path("iata_code").asText());
+                        airline.put("name", node.path("name").asText());
+                        airlines.add(airline);
+                    }
+                }
+            }
+            log.info("Successfully loaded {} active commercial airlines.", airlines.size());
+            return airlines;
+
+        } catch (Exception e) {
+            log.error("Failed to fetch Airlines DB: {}", e.getMessage());
+            return Collections.emptyList();
+        }
+    }
 }

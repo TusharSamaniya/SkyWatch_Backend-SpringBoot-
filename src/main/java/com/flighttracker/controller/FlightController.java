@@ -99,4 +99,10 @@ public class FlightController {
             @RequestParam(required = false) String arr) {
         return airlabsService.getRoutes(dep, arr);
     }
+    
+ // 5. NEW: Airlines List Endpoint
+    @GetMapping("/airlines")
+    public List<Map<String, String>> getAirlines() {
+        return airlabsService.getActiveAirlines();
+    }
 }
