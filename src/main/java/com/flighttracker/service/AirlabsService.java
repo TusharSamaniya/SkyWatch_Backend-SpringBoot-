@@ -16,6 +16,7 @@ import com.flighttracker.dto.AirlabsFlight;
 import com.flighttracker.dto.AirlabsResponse;
 import com.flighttracker.dto.AirlabsSchedule;
 import com.flighttracker.dto.AirlabsScheduleResponse;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.JsonNode;
@@ -295,13 +296,26 @@ public class AirlabsService {
  // ==========================================
     // NEW: Airline Fleet Tracker - Fetch Airlines DB
     // ==========================================
+ // ==========================================
+    // NEW: Airline Fleet Tracker - Fetch Airlines DB
+    // ==========================================
     public List<Map<String, String>> getActiveAirlines() {
         log.info("Fetching global Airlines DB...");
         
         try {
             String url = "https://airlabs.co/api/v9/airlines?api_key=" + apiKey;
 
-            JsonNode rootNode = WebClient.create().get()
+            // FIX: Increase the Spring Boot memory buffer to 16MB to handle this massive file
+            ExchangeStrategies strategies = ExchangeStrategies.builder()
+                    .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)) 
+                    .build();
+
+            WebClient largeWebClient = WebClient.builder()
+                    .exchangeStrategies(strategies)
+                    .build();
+
+            // Use the new largeWebClient instead of standard WebClient.create()
+            JsonNode rootNode = largeWebClient.get()
                     .uri(url)
                     .retrieve()
                     .bodyToMono(JsonNode.class)
