@@ -91,4 +91,12 @@ public class FlightController {
     public Map<String, List<JsonNode>> getAirportSchedules(@PathVariable String iata) {
         return airlabsService.getAirportSchedules(iata);
     }
+    
+ // 4. NEW: Route Intelligence Endpoint
+    @GetMapping("/routes")
+    public JsonNode getRoutes(
+            @RequestParam(required = false) String dep,
+            @RequestParam(required = false) String arr) {
+        return airlabsService.getRoutes(dep, arr);
+    }
 }
