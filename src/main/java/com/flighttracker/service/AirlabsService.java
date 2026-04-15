@@ -261,4 +261,34 @@ public class AirlabsService {
             return schedules;
         }
     }
+    
+ // ==========================================
+    // NEW: Route Intelligence - Fetch flight paths between airports
+    // ==========================================
+    public JsonNode getRoutes(String depIata, String arrIata) {
+        log.info("Fetching Route Intelligence: {} -> {}", depIata, arrIata);
+        
+        try {
+            // Build the URL dynamically based on what the user searches for
+            StringBuilder urlBuilder = new StringBuilder("https://airlabs.co/api/v9/routes?api_key=" + apiKey);
+            
+            if (depIata != null && !depIata.trim().isEmpty()) {
+                urlBuilder.append("&dep_iata=").append(depIata.toUpperCase());
+            }
+            if (arrIata != null && !arrIata.trim().isEmpty()) {
+                urlBuilder.append("&arr_iata=").append(arrIata.toUpperCase());
+            }
+
+            // Fetch the routes using WebClient
+            return WebClient.create().get()
+                    .uri(urlBuilder.toString())
+                    .retrieve()
+                    .bodyToMono(JsonNode.class)
+                    .block();
+
+        } catch (Exception e) {
+            log.error("Failed to fetch Route Intelligence: {}", e.getMessage());
+            return null;
+        }
+    }
 }

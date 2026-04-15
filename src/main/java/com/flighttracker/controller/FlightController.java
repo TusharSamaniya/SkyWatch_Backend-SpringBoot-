@@ -81,6 +81,12 @@ public class FlightController {
 	
 	
 	// NEW: Endpoint to get Arrivals and Departures when an airport is clicked
+	@GetMapping("/airports")
+    public List<Map<String, Object>> getAirports(@RequestParam(defaultValue = "IN") String country) {
+        return airlabsService.getAirportsByCountry(country);
+    }
+
+    // 3. NEW: Airport Schedules Endpoint
     @GetMapping("/airports/{iata}/schedules")
     public Map<String, List<JsonNode>> getAirportSchedules(@PathVariable String iata) {
         return airlabsService.getAirportSchedules(iata);
